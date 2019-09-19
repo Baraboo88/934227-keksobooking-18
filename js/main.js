@@ -45,7 +45,7 @@ function Offer() {
   this.photos = getArrayWithRandomLength(offerPhotoList);
 }
 
-function Location() {
+function LocationObject() {
   this.x = getRandomNumberFromRange(0, parentElement.clientWidth);
   this.y = getRandomNumberFromRange(130, 630);
 }
@@ -53,7 +53,7 @@ function Location() {
 function MockObject(number) {
   this.author = new Author(number);
   this.offer = new Offer();
-  this.location = new Location();
+  this.location = new LocationObject();
 }
 
 function getArrayOfMockObjects(number) {
