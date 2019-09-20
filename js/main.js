@@ -6,21 +6,38 @@ var offerCheckoutList = ['12:00', '13:00', '14:00'];
 var offerFeaturesList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var offerPhotoList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var parentElement = document.querySelector('.map__pins');
+var outerBlock = document.querySelector('.map__pins');
+
+var LOCAIION_Y_FROM = 130;
+var LOCATION_Y_TO = 630;
+
+var arrayOfObjects = getArrayOfMockObjects(8);
+
+function getRandom(number) {
+  return Math.floor(Math.random() * number);
+}
+
+function activePage() {
+  document.querySelector('.map').classList.remove('map--faded');
+}
+
+function shuffleArray(array) {
+  for (var k = array.length - 1; k > 0; k --) {
+    var randomIndex = Math.floor(Math.random() * (k + 1));
+    var temp = array[k];
+    array[k] = array[randomIndex];
+    array[randomIndex] = temp;
+  }
+  return array;
+}
 
 function getRandomElementFromArray(array) {
-  return array[Math.floor(Math.random() * array.length)];
+  return array[getRandom(array.length)];
 }
 
 function getArrayWithRandomLength(array) {
-  var randomValue = Math.floor(Math.random() * array.length);
-  randomValue = randomValue === 0 ? 1 : randomValue;
 
-  function getRandomElement() {
-    return getRandomElementFromArray(array);
-  }
-
-  return new Array(randomValue).fill('').map(getRandomElement);
+  return shuffleArray(array).slice(0, getRandom(array.length));
 }
 
 function getRandomNumberFromRange(min, max) {
@@ -31,7 +48,7 @@ function Author(number) {
   this.avatar = 'img/avatars/user0' + number + '.png';
 }
 
-function Offer() {
+function Offer(location) {
   this.title = 'Заголовок';
   this.address = location.x + ', ' + location.y;
   this.price = 10;
@@ -46,14 +63,14 @@ function Offer() {
 }
 
 function LocationObject() {
-  this.x = getRandomNumberFromRange(0, parentElement.clientWidth);
-  this.y = getRandomNumberFromRange(130, 630);
+  this.x = getRandomNumberFromRange(0, outerBlock.clientWidth);
+  this.y = getRandomNumberFromRange(LOCAIION_Y_FROM, LOCATION_Y_TO);
 }
 
 function MockObject(number) {
   this.author = new Author(number);
-  this.offer = new Offer();
   this.location = new LocationObject();
+  this.offer = new Offer(this.location);
 }
 
 function getArrayOfMockObjects(number) {
@@ -61,8 +78,6 @@ function getArrayOfMockObjects(number) {
     return new MockObject(index + 1);
   });
 }
-
-document.querySelector('.map').classList.remove('map--faded');
 
 function cloneAndAddElement(obj) {
   var templateElement = document.querySelector('#pin')
@@ -84,4 +99,6 @@ function addElementsToBlock(block, elementsArray) {
   block.appendChild(documentFragment);
 }
 
-addElementsToBlock(parentElement, getArrayOfMockObjects(8));
+activePage();
+
+addElementsToBlock(outerBlock, arrayOfObjects);
