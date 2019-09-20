@@ -22,7 +22,7 @@ function activePage() {
 }
 
 function shuffleArray(array) {
-  for (var k = array.length - 1; k > 0; k --) {
+  for (var k = array.length - 1; k > 0; k--) {
     var randomIndex = Math.floor(Math.random() * (k + 1));
     var temp = array[k];
     array[k] = array[randomIndex];
