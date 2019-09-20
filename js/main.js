@@ -7,6 +7,8 @@ var offerFeaturesList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 
 var offerPhotoList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 var outerBlock = document.querySelector('.map__pins');
+var mapBlock = document.querySelector('.map');
+var mapFileterContainerBlock = document.querySelector('.map__filters-container');
 
 var LOCAIION_Y_FROM = 130;
 var LOCATION_Y_TO = 630;
@@ -91,14 +93,67 @@ function cloneAndAddElement(obj) {
   return clonedElement;
 }
 
-function addElementsToBlock(block, elementsArray) {
+function addElementsToBlock(block, elementsArray, callBackCloneAndAdd) {
   var documentFragment = document.createDocumentFragment();
   elementsArray.forEach(function (element) {
-    documentFragment.appendChild(cloneAndAddElement(element));
+    documentFragment.appendChild(callBackCloneAndAdd(element));
   });
   block.appendChild(documentFragment);
 }
 
+function cloneAndAddCard(obj) {
+  var templateElement = document.querySelector('#card')
+    .content
+    .querySelector('.map__card');
+  var clonedElement = templateElement.cloneNode(true);
+  var photosNode = clonedElement.querySelector('.popup__photos');
+  var photoNode = clonedElement.querySelector('.popup__photo');
+  photosNode.removeChild(photoNode);
+  clonedElement.querySelector('.popup__title').textContent = obj.offer.title;
+  clonedElement.querySelector('.popup__text--address').textContent = obj.offer.address;
+  clonedElement.querySelector('.popup__text--price').textContent = obj.offer.price;
+  clonedElement.querySelector('.popup__type').textContent = obj.offer.type;
+  clonedElement.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' комнаты для ' + obj.offer.guests + ' гостей';
+  clonedElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + obj.offer.checkin + ', выезд до ' + obj.offer.checkout;
+  if (!obj.offer.features.includes('wifi')) {
+    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--wifi'));
+  }
+  if (!obj.offer.features.includes('dishwasher')) {
+    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--dishwasher'));
+  }
+  if (!obj.offer.features.includes('parking')) {
+    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--parking'));
+  }
+  if (!obj.offer.features.includes('washer')) {
+    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--washer'));
+  }
+  if (!obj.offer.features.includes('elevator')) {
+    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--elevator'));
+  }
+  if (!obj.offer.features.includes('conditioner')) {
+    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--conditioner'));
+  }
+  clonedElement.querySelector('.popup__description').textContent = obj.offer.description;
+
+  addElementsToBlock(photosNode, obj.offer.photos, function (element) {
+    var photoNodeCloned = photoNode.cloneNode(true);
+    photoNodeCloned.src = element;
+    return photoNodeCloned;
+  });
+  clonedElement.querySelector('.popup__avatar').src = obj.author.avatar;
+  return clonedElement;
+}
+
+function addBlockBefore(parentBlock, elementAhead, elementBehind) {
+  parentBlock.insertBefore(elementAhead, elementBehind);
+}
+
+
 activePage();
 
-addElementsToBlock(outerBlock, arrayOfObjects);
+addElementsToBlock(outerBlock, arrayOfObjects, cloneAndAddElement);
+
+addElementsToBlock(mapBlock, arrayOfObjects.slice(0, 1), cloneAndAddCard);
+
+addBlockBefore(mapBlock, mapBlock.lastChild, mapFileterContainerBlock);
+
