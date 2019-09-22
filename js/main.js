@@ -13,12 +13,10 @@ var offerPhotoList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'htt
 
 var outerBlock = document.querySelector('.map__pins');
 var mapBlock = document.querySelector('.map');
-var mapFileterContainerBlock = document.querySelector('.map__filters-container');
+var mapFilterContainerBlock = document.querySelector('.map__filters-container');
 
-var LOCAIION_Y_FROM = 130;
+var LOCATION_Y_FROM = 130;
 var LOCATION_Y_TO = 630;
-
-var pins = getArrayOfMockObjects(8);
 
 function getRandom(number) {
   return Math.floor(Math.random() * number);
@@ -71,7 +69,7 @@ function Offer(location) {
 
 function LocationObject() {
   this.x = getRandomNumberFromRange(0, outerBlock.clientWidth);
-  this.y = getRandomNumberFromRange(LOCAIION_Y_FROM, LOCATION_Y_TO);
+  this.y = getRandomNumberFromRange(LOCATION_Y_FROM, LOCATION_Y_TO);
 }
 
 function MockObject(number) {
@@ -97,15 +95,10 @@ function cloneAndAddElement(obj) {
 
 function addElementsToBlock(block, elements, callBackCloneAndAdd) {
   var documentFragment = document.createDocumentFragment();
-  if (Array.isArray(elements)) {
-    elements.forEach(function (element) {
-      documentFragment.appendChild(callBackCloneAndAdd(element));
-    });
-    block.appendChild(documentFragment);
-  } else {
-    block.appendChild(callBackCloneAndAdd(elements));
-  }
-
+  elements.forEach(function (element) {
+    documentFragment.appendChild(callBackCloneAndAdd(element));
+  });
+  block.appendChild(documentFragment);
 }
 
 function getClonedElement(templateSelector, elementSelector) {
@@ -134,7 +127,7 @@ function roomsFlexNormalize(number) {
 }
 
 function guestsFlexNormalize(number) {
-  var forms = ['гость', 'гостя', 'гостей'];
+  var forms = ['гостя', 'гостей', 'гостей'];
   return flexNormalize(number, forms);
 }
 
@@ -144,11 +137,18 @@ function renderFeature(feature) {
   return featureElement;
 }
 
+function renderPhoto(photo) {
+  var photoElement = document.createElement('IMG');
+  photoElement.className = 'popup__photo';
+  photoElement.setAttribute('width', '45');
+  photoElement.setAttribute('height', '40');
+  photoElement.setAttribute('alt', 'Фотография жилья');
+  photoElement.src = photo;
+  return photoElement;
+}
+
 function cloneAndAddCard(obj) {
   var clonedElement = getClonedElement('#card', '.map__card');
-  var photosNode = clonedElement.querySelector('.popup__photos');
-  var photoNode = clonedElement.querySelector('.popup__photo');
-  photosNode.removeChild(photoNode);
   clonedElement.querySelector('.popup__title').textContent = obj.offer.title;
   clonedElement.querySelector('.popup__text--address').textContent = obj.offer.address;
   clonedElement.querySelector('.popup__text--price').textContent = obj.offer.price;
@@ -158,25 +158,18 @@ function cloneAndAddCard(obj) {
   clonedElement.querySelector('.popup__features').innerHTML = '';
   addElementsToBlock(clonedElement.querySelector('.popup__features'), obj.offer.features, renderFeature);
   clonedElement.querySelector('.popup__description').textContent = obj.offer.description;
-  addElementsToBlock(photosNode, obj.offer.photos, function (element) {
-    var photoNodeCloned = photoNode.cloneNode(true);
-    photoNodeCloned.src = element;
-    return photoNodeCloned;
-  });
+  clonedElement.querySelector('.popup__photos').innerHTML = '';
+  addElementsToBlock(clonedElement.querySelector('.popup__photos'), obj.offer.photos, renderPhoto);
   clonedElement.querySelector('.popup__avatar').src = obj.author.avatar;
   return clonedElement;
 }
 
-function addBlockBefore(parentBlock, elementAhead, elementBehind) {
-  parentBlock.insertBefore(elementAhead, elementBehind);
-}
-
+var pins = getArrayOfMockObjects(8);
 
 activePage();
 
 addElementsToBlock(outerBlock, pins, cloneAndAddElement);
 
-addElementsToBlock(mapBlock, pins[0], cloneAndAddCard);
+mapBlock.appendChild(cloneAndAddCard(pins[0]));
 
-addBlockBefore(mapBlock, mapBlock.lastChild, mapFileterContainerBlock);
-
+mapBlock.insertBefore(document.querySelector('.map__card'), mapFilterContainerBlock);
