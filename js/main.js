@@ -1,6 +1,11 @@
 'use strict';
 
 var offerTypeList = ['palace', 'flat', 'bungalo'];
+var offerTypeListMap = {
+  'palece': 'Особняк',
+  'flat': 'Квартира',
+  'bungalo': 'Бунгало',
+};
 var offerCheckinList = ['12:00', '13:00', '14:00'];
 var offerCheckoutList = ['12:00', '13:00', '14:00'];
 var offerFeaturesList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -13,7 +18,7 @@ var mapFileterContainerBlock = document.querySelector('.map__filters-container')
 var LOCAIION_Y_FROM = 130;
 var LOCATION_Y_TO = 630;
 
-var arrayOfObjects = getArrayOfMockObjects(8);
+var pins = getArrayOfMockObjects(8);
 
 function getRandom(number) {
   return Math.floor(Math.random() * number);
@@ -82,10 +87,7 @@ function getArrayOfMockObjects(number) {
 }
 
 function cloneAndAddElement(obj) {
-  var templateElement = document.querySelector('#pin')
-    .content
-    .querySelector('.map__pin');
-  var clonedElement = templateElement.cloneNode(true);
+  var clonedElement = getClonedElement('#pin', '.map__pin');
   clonedElement.style.left = (obj.location.x - clonedElement.clientWidth / 2) + 'px';
   clonedElement.style.top = (obj.location.y - clonedElement.clientHeight) + 'px';
   clonedElement.firstChild.src = obj.author.avatar;
@@ -93,48 +95,69 @@ function cloneAndAddElement(obj) {
   return clonedElement;
 }
 
-function addElementsToBlock(block, elementsArray, callBackCloneAndAdd) {
+function addElementsToBlock(block, elements, callBackCloneAndAdd) {
   var documentFragment = document.createDocumentFragment();
-  elementsArray.forEach(function (element) {
-    documentFragment.appendChild(callBackCloneAndAdd(element));
-  });
-  block.appendChild(documentFragment);
+  if (Array.isArray(elements)) {
+    elements.forEach(function (element) {
+      documentFragment.appendChild(callBackCloneAndAdd(element));
+    });
+    block.appendChild(documentFragment);
+  } else {
+    block.appendChild(callBackCloneAndAdd(elements));
+  }
+
+}
+
+function getClonedElement(templateSelector, elementSelector) {
+  return document
+    .querySelector(templateSelector)
+    .content
+    .querySelector(elementSelector)
+    .cloneNode(true);
+
+}
+
+function flexNormalize(number, forms) {
+  switch (true) {
+    case number === 1 :
+      return forms[0];
+    case number > 4:
+      return forms[1];
+    default:
+      return forms[2];
+  }
+}
+
+function roomsFlexNormalize(number) {
+  var forms = ['комната', 'комнат', 'комнаты'];
+  return flexNormalize(number, forms);
+}
+
+function guestsFlexNormalize(number) {
+  var forms = ['гость', 'гостя', 'гостей'];
+  return flexNormalize(number, forms);
+}
+
+function renderFeature(feature) {
+  var featureElement = document.createElement('LI');
+  featureElement.className = 'popup__feature popup__feature--' + feature;
+  return featureElement;
 }
 
 function cloneAndAddCard(obj) {
-  var templateElement = document.querySelector('#card')
-    .content
-    .querySelector('.map__card');
-  var clonedElement = templateElement.cloneNode(true);
+  var clonedElement = getClonedElement('#card', '.map__card');
   var photosNode = clonedElement.querySelector('.popup__photos');
   var photoNode = clonedElement.querySelector('.popup__photo');
   photosNode.removeChild(photoNode);
   clonedElement.querySelector('.popup__title').textContent = obj.offer.title;
   clonedElement.querySelector('.popup__text--address').textContent = obj.offer.address;
   clonedElement.querySelector('.popup__text--price').textContent = obj.offer.price;
-  clonedElement.querySelector('.popup__type').textContent = obj.offer.type;
-  clonedElement.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' комнаты для ' + obj.offer.guests + ' гостей';
+  clonedElement.querySelector('.popup__type').textContent = offerTypeListMap[obj.offer.type];
+  clonedElement.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' ' + roomsFlexNormalize(obj.offer.rooms) + ' для ' + obj.offer.guests + ' ' + guestsFlexNormalize(obj.offer.guests);
   clonedElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + obj.offer.checkin + ', выезд до ' + obj.offer.checkout;
-  if (!obj.offer.features.includes('wifi')) {
-    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--wifi'));
-  }
-  if (!obj.offer.features.includes('dishwasher')) {
-    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--dishwasher'));
-  }
-  if (!obj.offer.features.includes('parking')) {
-    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--parking'));
-  }
-  if (!obj.offer.features.includes('washer')) {
-    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--washer'));
-  }
-  if (!obj.offer.features.includes('elevator')) {
-    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--elevator'));
-  }
-  if (!obj.offer.features.includes('conditioner')) {
-    clonedElement.querySelector('.popup__features').removeChild(clonedElement.querySelector('.popup__feature--conditioner'));
-  }
+  clonedElement.querySelector('.popup__features').innerHTML = '';
+  addElementsToBlock(clonedElement.querySelector('.popup__features'), obj.offer.features, renderFeature);
   clonedElement.querySelector('.popup__description').textContent = obj.offer.description;
-
   addElementsToBlock(photosNode, obj.offer.photos, function (element) {
     var photoNodeCloned = photoNode.cloneNode(true);
     photoNodeCloned.src = element;
@@ -151,9 +174,9 @@ function addBlockBefore(parentBlock, elementAhead, elementBehind) {
 
 activePage();
 
-addElementsToBlock(outerBlock, arrayOfObjects, cloneAndAddElement);
+addElementsToBlock(outerBlock, pins, cloneAndAddElement);
 
-addElementsToBlock(mapBlock, arrayOfObjects.slice(0, 1), cloneAndAddCard);
+addElementsToBlock(mapBlock, pins[0], cloneAndAddCard);
 
 addBlockBefore(mapBlock, mapBlock.lastChild, mapFileterContainerBlock);
 
