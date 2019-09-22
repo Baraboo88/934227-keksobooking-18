@@ -1,19 +1,19 @@
 'use strict';
 
-var offerTypeList = ['palace', 'flat', 'bungalo'];
+var offerTypeList = ['palace', 'flat', 'house', 'bungalo'];
 var offerTypeListMap = {
   'palece': 'Особняк',
   'flat': 'Квартира',
   'bungalo': 'Бунгало',
+  'house': 'Дом'
 };
 var offerCheckinList = ['12:00', '13:00', '14:00'];
 var offerCheckoutList = ['12:00', '13:00', '14:00'];
 var offerFeaturesList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var offerPhotoList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var outerBlock = document.querySelector('.map__pins');
+var mapPins = document.querySelector('.map__pins');
 var mapBlock = document.querySelector('.map');
-var mapFilterContainerBlock = document.querySelector('.map__filters-container');
 
 var LOCATION_Y_FROM = 130;
 var LOCATION_Y_TO = 630;
@@ -68,7 +68,7 @@ function Offer(location) {
 }
 
 function LocationObject() {
-  this.x = getRandomNumberFromRange(0, outerBlock.clientWidth);
+  this.x = getRandomNumberFromRange(0, mapPins.clientWidth);
   this.y = getRandomNumberFromRange(LOCATION_Y_FROM, LOCATION_Y_TO);
 }
 
@@ -148,6 +148,7 @@ function renderPhoto(photo) {
 }
 
 function cloneAndAddCard(obj) {
+  var mapFilterContainerBlock = document.querySelector('.map__filters-container');
   var clonedElement = getClonedElement('#card', '.map__card');
   clonedElement.querySelector('.popup__title').textContent = obj.offer.title;
   clonedElement.querySelector('.popup__text--address').textContent = obj.offer.address;
@@ -161,15 +162,13 @@ function cloneAndAddCard(obj) {
   clonedElement.querySelector('.popup__photos').innerHTML = '';
   addElementsToBlock(clonedElement.querySelector('.popup__photos'), obj.offer.photos, renderPhoto);
   clonedElement.querySelector('.popup__avatar').src = obj.author.avatar;
-  return clonedElement;
+  mapBlock.insertBefore(clonedElement, mapFilterContainerBlock);
 }
 
 var pins = getArrayOfMockObjects(8);
 
 activePage();
 
-addElementsToBlock(outerBlock, pins, cloneAndAddElement);
+addElementsToBlock(mapPins, pins, cloneAndAddElement);
 
-mapBlock.appendChild(cloneAndAddCard(pins[0]));
-
-mapBlock.insertBefore(document.querySelector('.map__card'), mapFilterContainerBlock);
+cloneAndAddCard(pins[0]);
