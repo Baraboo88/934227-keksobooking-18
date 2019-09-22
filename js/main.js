@@ -2,7 +2,7 @@
 
 var offerTypeList = ['palace', 'flat', 'house', 'bungalo'];
 var offerTypeListMap = {
-  'palece': 'Особняк',
+  'palace': 'Дворец',
   'flat': 'Квартира',
   'bungalo': 'Бунгало',
   'house': 'Дом'
@@ -28,7 +28,7 @@ function activePage() {
 
 function shuffleArray(array) {
   for (var k = array.length - 1; k > 0; k--) {
-    var randomIndex = Math.floor(Math.random() * (k + 1));
+    var randomIndex = getRandom(k + 1);
     var temp = array[k];
     array[k] = array[randomIndex];
     array[randomIndex] = temp;
