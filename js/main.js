@@ -1,29 +1,92 @@
 'use strict';
-
+/*
 var offerTypeList = ['palace', 'flat', 'house', 'bungalo'];
 var offerTypeListMap = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'bungalo': 'Бунгало',
-  'house': 'Дом'
+  'house': 'Дом',
 };
 var offerCheckinList = ['12:00', '13:00', '14:00'];
 var offerCheckoutList = ['12:00', '13:00', '14:00'];
 var offerFeaturesList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var offerPhotoList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var mapPins = document.querySelector('.map__pins');
+
 var mapBlock = document.querySelector('.map');
-
 var LOCATION_Y_FROM = 130;
+*/
 var LOCATION_Y_TO = 630;
+var mapPins = document.querySelector('.map__pins');
+var INITIAL_X_LOCARION = Math.floor(mapPins.clientWidth / 2);
+var INITIAL_Y_LOCARION = Math.floor(LOCATION_Y_TO / 2);
 
-function getRandom(number) {
-  return Math.floor(Math.random() * number);
+var mapPinMain = document.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var mapFiltersForm = document.querySelector('.map__filters');
+var roomCapacity = document.querySelector('#capacity');
+var roomNumber = document.querySelector('#room_number');
+
+addDisabledToForm(adForm, 'input');
+addDisabledToForm(adForm, 'select');
+addDisabledToForm(mapFiltersForm, 'input');
+addDisabledToForm(mapFiltersForm, 'select');
+
+
+function populateAddress(mouseX, mouseY) {
+  if (mouseX === undefined || mouseY === undefined) {
+    document.querySelector('#address').value = INITIAL_X_LOCARION + ', ' + INITIAL_Y_LOCARION;
+  } else {
+    if (document.documentElement.clientWidth > mapPins.clientWidth) {
+      mouseX = Math.floor(mouseX - (document.documentElement.clientWidth - mapPins.clientWidth) / 2);
+    }
+    document.querySelector('#address').value = mouseX + ', ' + mouseY;
+  }
+
+}
+
+function addDisabledToForm(formDomElement, selector) {
+  formDomElement.querySelectorAll(selector).forEach(function (element) {
+    element.setAttribute('disabled', true);
+  });
+}
+
+function removeDisabledFromForm(formDomElement, selector) {
+  formDomElement.querySelectorAll(selector).forEach(function (element) {
+    element.removeAttribute('disabled');
+  });
+}
+
+function activePageActions() {
+  document.querySelector('.map').classList.remove('map--faded');
+  document.querySelector('.ad-form').classList.remove('ad-form--disabled');
+  removeDisabledFromForm(adForm, 'input');
+  removeDisabledFromForm(adForm, 'select');
+  removeDisabledFromForm(mapFiltersForm, 'input');
+  removeDisabledFromForm(mapFiltersForm, 'select');
 }
 
 function activePage() {
-  document.querySelector('.map').classList.remove('map--faded');
+  formValidation();
+  roomCapacity.addEventListener('input', formValidation);
+  roomNumber.addEventListener('input', formValidation);
+  populateAddress();
+  mapPinMain.addEventListener('click', function (evt) {
+    activePageActions();
+    populateAddress(evt.clientX, evt.clientY);
+  });
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 13) {
+      activePageActions();
+    }
+  });
+}
+
+/*
+
+function getRandom(number) {
+  return Math.floor(Math.random() * number);
 }
 
 function shuffleArray(array) {
@@ -84,15 +147,6 @@ function getArrayOfMockObjects(number) {
   });
 }
 
-function cloneAndAddElement(obj) {
-  var clonedElement = getClonedElement('#pin', '.map__pin');
-  clonedElement.style.left = (obj.location.x - clonedElement.clientWidth / 2) + 'px';
-  clonedElement.style.top = (obj.location.y - clonedElement.clientHeight) + 'px';
-  clonedElement.firstChild.src = obj.author.avatar;
-  clonedElement.firstChild.alt = obj.offer.title;
-  return clonedElement;
-}
-
 function addElementsToBlock(block, elements, callBackCloneAndAdd) {
   var documentFragment = document.createDocumentFragment();
   elements.forEach(function (element) {
@@ -108,6 +162,15 @@ function getClonedElement(templateSelector, elementSelector) {
     .querySelector(elementSelector)
     .cloneNode(true);
 
+}
+
+function cloneAndAddElement(obj) {
+  var clonedElement = getClonedElement('#pin', '.map__pin');
+  clonedElement.style.left = (obj.location.x - clonedElement.clientWidth / 2) + 'px';
+  clonedElement.style.top = (obj.location.y - clonedElement.clientHeight) + 'px';
+  clonedElement.firstChild.src = obj.author.avatar;
+  clonedElement.firstChild.alt = obj.offer.title;
+  return clonedElement;
 }
 
 function flexNormalize(number, forms) {
@@ -166,9 +229,20 @@ function cloneAndAddCard(obj) {
 }
 
 var pins = getArrayOfMockObjects(8);
+*/
+
+function formValidation() {
+  var roomNumberValue = roomNumber[roomNumber.selectedIndex].value;
+  var roomCapacityValue = roomCapacity[roomCapacity.selectedIndex].value;
+  if (roomNumberValue < roomCapacityValue || (roomNumberValue === 0 && roomCapacityValue !== 0) || (roomNumberValue !== 0 && roomCapacityValue === 0)) {
+    roomCapacity.setCustomValidity('Не правильное количество гостей');
+  } else {
+    roomCapacity.setCustomValidity('');
+  }
+}
 
 activePage();
 
-addElementsToBlock(mapPins, pins, cloneAndAddElement);
+// addElementsToBlock(mapPins, pins, cloneAndAddElement);
 
-cloneAndAddCard(pins[0]);
+// cloneAndAddCard(pins[0]);
