@@ -1,5 +1,5 @@
 'use strict';
-/*
+
 var offerTypeList = ['palace', 'flat', 'house', 'bungalo'];
 var offerTypeListMap = {
   'palace': 'Дворец',
@@ -15,7 +15,7 @@ var offerPhotoList = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'htt
 
 var mapBlock = document.querySelector('.map');
 var LOCATION_Y_FROM = 130;
-*/
+
 var LOCATION_Y_TO = 630;
 var mapPins = document.querySelector('.map__pins');
 var INITIAL_X_LOCARION = Math.floor(mapPins.clientWidth / 2);
@@ -64,6 +64,9 @@ function activePageActions() {
   removeDisabledFromForm(adForm, 'select');
   removeDisabledFromForm(mapFiltersForm, 'input');
   removeDisabledFromForm(mapFiltersForm, 'select');
+  addElementsToBlock(mapPins, pins, cloneAndAddElement);
+
+  cloneAndAddCard(pins[0]);
 }
 
 function activePage() {
@@ -83,7 +86,6 @@ function activePage() {
   });
 }
 
-/*
 
 function getRandom(number) {
   return Math.floor(Math.random() * number);
@@ -229,7 +231,7 @@ function cloneAndAddCard(obj) {
 }
 
 var pins = getArrayOfMockObjects(8);
-*/
+
 
 function formValidation() {
   var roomNumberValue = roomNumber[roomNumber.selectedIndex].value;
@@ -241,8 +243,7 @@ function formValidation() {
   }
 }
 
+
 activePage();
 
-// addElementsToBlock(mapPins, pins, cloneAndAddElement);
 
-// cloneAndAddCard(pins[0]);
