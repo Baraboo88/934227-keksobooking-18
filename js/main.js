@@ -18,24 +18,28 @@ var LOCATION_Y_FROM = 130;
 
 var LOCATION_Y_TO = 630;
 var mapPins = document.querySelector('.map__pins');
-var INITIAL_X_LOCARION = Math.floor(mapPins.clientWidth / 2);
-var INITIAL_Y_LOCARION = Math.floor(LOCATION_Y_TO / 2);
+var INITIAL_X_LOCATION = Math.floor(mapPins.clientWidth / 2);
+var INITIAL_Y_LOCATION = Math.floor(LOCATION_Y_TO / 2);
+
+var ENTER_CODE = 13;
 
 var mapPinMain = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var mapFiltersForm = document.querySelector('.map__filters');
-var roomCapacity = document.querySelector('#capacity');
-var roomNumber = document.querySelector('#room_number');
+
 
 addDisabledToForm(adForm, 'input');
 addDisabledToForm(adForm, 'select');
+addDisabledToForm(adForm, 'button');
+addDisabledToForm(adForm, 'textarea');
 addDisabledToForm(mapFiltersForm, 'input');
 addDisabledToForm(mapFiltersForm, 'select');
-
+addDisabledToForm(mapFiltersForm, 'button');
+addDisabledToForm(mapFiltersForm, 'textarea');
 
 function populateAddress(mouseX, mouseY) {
   if (mouseX === undefined || mouseY === undefined) {
-    document.querySelector('#address').value = INITIAL_X_LOCARION + ', ' + INITIAL_Y_LOCARION;
+    document.querySelector('#address').value = INITIAL_X_LOCATION + ', ' + INITIAL_Y_LOCATION;
   } else {
     if (document.documentElement.clientWidth > mapPins.clientWidth) {
       mouseX = Math.floor(mouseX - (document.documentElement.clientWidth - mapPins.clientWidth) / 2);
@@ -44,6 +48,7 @@ function populateAddress(mouseX, mouseY) {
   }
 
 }
+
 
 function addDisabledToForm(formDomElement, selector) {
   formDomElement.querySelectorAll(selector).forEach(function (element) {
@@ -62,17 +67,24 @@ function activePageActions() {
   document.querySelector('.ad-form').classList.remove('ad-form--disabled');
   removeDisabledFromForm(adForm, 'input');
   removeDisabledFromForm(adForm, 'select');
+  removeDisabledFromForm(adForm, 'button');
+  removeDisabledFromForm(adForm, 'textarea');
   removeDisabledFromForm(mapFiltersForm, 'input');
   removeDisabledFromForm(mapFiltersForm, 'select');
-  addElementsToBlock(mapPins, pins, cloneAndAddElement);
+  removeDisabledFromForm(mapFiltersForm, 'button');
+  removeDisabledFromForm(mapFiltersForm, 'textarea');
+  document.querySelector('#address').setAttribute('readonly', true)
+  addElementsToBlock(mapPins, pins, addingElements);
 
   cloneAndAddCard(pins[0]);
 }
 
-function activePage() {
-  formValidation();
-  roomCapacity.addEventListener('input', formValidation);
-  roomNumber.addEventListener('input', formValidation);
+function activatePage() {
+  var roomCapacity = document.querySelector('#capacity');
+  var roomNumber = document.querySelector('#room_number');
+  validateRoomNumbers();
+  roomCapacity.addEventListener('input', validateRoomNumbers);
+  roomNumber.addEventListener('input', validateRoomNumbers);
   populateAddress();
   mapPinMain.addEventListener('click', function (evt) {
     activePageActions();
@@ -80,7 +92,7 @@ function activePage() {
   });
 
   document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === ENTER_CODE) {
       activePageActions();
     }
   });
@@ -166,7 +178,7 @@ function getClonedElement(templateSelector, elementSelector) {
 
 }
 
-function cloneAndAddElement(obj) {
+function addingElements(obj) {
   var clonedElement = getClonedElement('#pin', '.map__pin');
   clonedElement.style.left = (obj.location.x - clonedElement.clientWidth / 2) + 'px';
   clonedElement.style.top = (obj.location.y - clonedElement.clientHeight) + 'px';
@@ -232,18 +244,37 @@ function cloneAndAddCard(obj) {
 
 var pins = getArrayOfMockObjects(8);
 
+var roomsCapacityMap = {
+  '1': {
+    'guests': ['1'],
+    'errorText': '1 комната для 1 гостя',
+  },
+  '2': {
+    'guests': ['1', '2'],
+    'errorText': '2 комнаты для 1 или 2 гостей',
+  },
+  '3': {
+    'guests': ['1', '2', '3'],
+    'errorText': '3 комнаты для 1, 2 или 3 гостей',
+  },
+  '100': {
+    'guests': ['0'],
+    'errorText': '100 комнат не для гостей',
+  },
+};
 
-function formValidation() {
+
+function validateRoomNumbers() {
+  var roomCapacity = document.querySelector('#capacity');
+  var roomNumber = document.querySelector('#room_number');
   var roomNumberValue = roomNumber[roomNumber.selectedIndex].value;
   var roomCapacityValue = roomCapacity[roomCapacity.selectedIndex].value;
-  if (roomNumberValue < roomCapacityValue || (roomNumberValue === 0 && roomCapacityValue !== 0) || (roomNumberValue !== 0 && roomCapacityValue === 0)) {
-    roomCapacity.setCustomValidity('Не правильное количество гостей');
-  } else {
-    roomCapacity.setCustomValidity('');
-  }
+
+  roomCapacity.setCustomValidity(roomsCapacityMap[roomNumberValue].guests.includes(roomCapacityValue) ? '' : roomsCapacityMap[roomNumberValue].errorText);
+
 }
 
 
-activePage();
+activatePage();
 
 
