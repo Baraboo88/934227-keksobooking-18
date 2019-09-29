@@ -73,7 +73,7 @@ function activePageActions() {
   removeDisabledFromForm(mapFiltersForm, 'select');
   removeDisabledFromForm(mapFiltersForm, 'button');
   removeDisabledFromForm(mapFiltersForm, 'textarea');
-  document.querySelector('#address').setAttribute('readonly', true)
+  document.querySelector('#address').setAttribute('readonly', true);
   addElementsToBlock(mapPins, pins, addingElements);
 
   cloneAndAddCard(pins[0]);
