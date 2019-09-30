@@ -18,8 +18,7 @@ var LOCATION_Y_FROM = 130;
 
 var LOCATION_Y_TO = 630;
 var mapPins = document.querySelector('.map__pins');
-var INITIAL_X_LOCATION = Math.floor(mapPins.clientWidth / 2);
-var INITIAL_Y_LOCATION = Math.floor(LOCATION_Y_TO / 2);
+
 
 var ENTER_CODE = 13;
 
@@ -37,18 +36,28 @@ addDisabledToForm(mapFiltersForm, 'select');
 addDisabledToForm(mapFiltersForm, 'button');
 addDisabledToForm(mapFiltersForm, 'textarea');
 
-function populateAddress(mouseX, mouseY) {
-  if (mouseX === undefined || mouseY === undefined) {
-    document.querySelector('#address').value = INITIAL_X_LOCATION + ', ' + INITIAL_Y_LOCATION;
-  } else {
-    if (document.documentElement.clientWidth > mapPins.clientWidth) {
-      mouseX = Math.floor(mouseX - (document.documentElement.clientWidth - mapPins.clientWidth) / 2);
-    }
-    document.querySelector('#address').value = mouseX + ', ' + mouseY;
-  }
-
+function populateInitialAddress() {
+  var addressField = document.querySelector('#address');
+  var x = Math.round(getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) + (getElementWidth('.map__pin--main') / 2));
+  var y = Math.round(getTopAtPage(mapPinMain) - getTopAtPage(mapPins) + (getElementHeight('.map__pin--main') / 2));
+  addressField.value = x + ', ' + y;
 }
 
+function getLeftAtPage(element) {
+  return element.getBoundingClientRect().left - document.querySelector('html').getBoundingClientRect().left;
+}
+
+function getTopAtPage(element) {
+  return element.getBoundingClientRect().top - document.querySelector('html').getBoundingClientRect().top;
+}
+
+function getElementWidth(selector) {
+  return document.querySelector(selector).clientWidth;
+}
+
+function getElementHeight(selector) {
+  return document.querySelector(selector).clientHeight;
+}
 
 function addDisabledToForm(formDomElement, selector) {
   formDomElement.querySelectorAll(selector).forEach(function (element) {
@@ -75,7 +84,6 @@ function activePageActions() {
   removeDisabledFromForm(mapFiltersForm, 'textarea');
   document.querySelector('#address').setAttribute('readonly', true);
   addElementsToBlock(mapPins, pins, addingElements);
-
   cloneAndAddCard(pins[0]);
 }
 
@@ -83,21 +91,23 @@ function activatePage() {
   var roomCapacity = document.querySelector('#capacity');
   var roomNumber = document.querySelector('#room_number');
   validateRoomNumbers();
-  roomCapacity.addEventListener('input', validateRoomNumbers);
-  roomNumber.addEventListener('input', validateRoomNumbers);
-  populateAddress();
-  mapPinMain.addEventListener('click', function (evt) {
-    activePageActions();
-    populateAddress(evt.clientX, evt.clientY);
-  });
-
-  document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_CODE) {
-      activePageActions();
-    }
-  });
+  roomCapacity.addEventListener('input', onRoomOrCapacityChange);
+  roomNumber.addEventListener('input', onRoomOrCapacityChange);
+  populateInitialAddress();
+  mapPinMain.addEventListener('click', onClickMainMapPin);
+  document.addEventListener('keydown', onkMapPinsKeydown);
 }
 
+function onClickMainMapPin() {
+  activePageActions();
+  populateInitialAddress();
+}
+
+function onkMapPinsKeydown (evt) {
+  if (evt.keyCode === ENTER_CODE) {
+    activePageActions();
+  }
+}
 
 function getRandom(number) {
   return Math.floor(Math.random() * number);
@@ -272,6 +282,11 @@ function validateRoomNumbers() {
 
   roomCapacity.setCustomValidity(roomsCapacityMap[roomNumberValue].guests.includes(roomCapacityValue) ? '' : roomsCapacityMap[roomNumberValue].errorText);
 
+}
+
+
+function onRoomOrCapacityChange() {
+  validateRoomNumbers();
 }
 
 
