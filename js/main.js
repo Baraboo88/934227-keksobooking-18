@@ -35,11 +35,19 @@ addDisabledToForm(mapFiltersForm, 'input');
 addDisabledToForm(mapFiltersForm, 'select');
 addDisabledToForm(mapFiltersForm, 'button');
 addDisabledToForm(mapFiltersForm, 'textarea');
+populateInitialAddress();
 
 function populateInitialAddress() {
   var addressField = document.querySelector('#address');
   var x = Math.round(getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) + (getElementWidth('.map__pin--main') / 2));
   var y = Math.round(getTopAtPage(mapPinMain) - getTopAtPage(mapPins) + (getElementHeight('.map__pin--main') / 2));
+  addressField.value = x + ', ' + y;
+}
+
+function populateActiveMainPinlAddress() {
+  var addressField = document.querySelector('#address');
+  var x = Math.round(getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) + (getElementWidth('.map__pin--main') / 2));
+  var y = Math.round(getTopAtPage(mapPinMain) - getTopAtPage(mapPins) + getElementHeight('.map__pin--main'));
   addressField.value = x + ', ' + y;
 }
 
@@ -83,8 +91,8 @@ function activePageActions() {
   removeDisabledFromForm(mapFiltersForm, 'button');
   removeDisabledFromForm(mapFiltersForm, 'textarea');
   document.querySelector('#address').setAttribute('readonly', true);
-  addElementsToBlock(mapPins, pins, addingElements);
-  cloneAndAddCard(pins[0]);
+  addElementsToBlock(mapPins, pins, addElements);
+  addCard(pins[0]);
 }
 
 function activatePage() {
@@ -93,17 +101,16 @@ function activatePage() {
   validateRoomNumbers();
   roomCapacity.addEventListener('input', onRoomOrCapacityChange);
   roomNumber.addEventListener('input', onRoomOrCapacityChange);
-  populateInitialAddress();
   mapPinMain.addEventListener('click', onClickMainMapPin);
   document.addEventListener('keydown', onkMapPinsKeydown);
 }
 
 function onClickMainMapPin() {
   activePageActions();
-  populateInitialAddress();
+  populateActiveMainPinlAddress();
 }
 
-function onkMapPinsKeydown (evt) {
+function onkMapPinsKeydown(evt) {
   if (evt.keyCode === ENTER_CODE) {
     activePageActions();
   }
@@ -188,7 +195,7 @@ function getClonedElement(templateSelector, elementSelector) {
 
 }
 
-function addingElements(obj) {
+function addElements(obj) {
   var clonedElement = getClonedElement('#pin', '.map__pin');
   clonedElement.style.left = (obj.location.x - clonedElement.clientWidth / 2) + 'px';
   clonedElement.style.top = (obj.location.y - clonedElement.clientHeight) + 'px';
@@ -234,7 +241,7 @@ function renderPhoto(photo) {
   return photoElement;
 }
 
-function cloneAndAddCard(obj) {
+function addCard(obj) {
   var mapFilterContainerBlock = document.querySelector('.map__filters-container');
   var clonedElement = getClonedElement('#card', '.map__card');
   clonedElement.querySelector('.popup__title').textContent = obj.offer.title;
