@@ -333,7 +333,7 @@ function onTimeInChange() {
   for (var k = 0; k < timeOut.length; k++) {
     timeOut[k].removeAttribute('selected');
     if (timeOut[k].value === timeInValue) {
-      timeOut[k].setAttribute('selected', true);
+      timeOut[k].selected = true;
     }
   }
 }
@@ -341,11 +341,11 @@ function onTimeInChange() {
 function onTimeOutChange() {
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  var timeOutValue = timeIn[timeOut.selectedIndex].value;
+  var timeOutValue = timeOut[timeOut.selectedIndex].value;
   for (var k = 0; k < timeIn.length; k++) {
     timeIn[k].removeAttribute('selected');
     if (timeIn[k].value === timeOutValue) {
-      timeIn[k].setAttribute('selected', true);
+      timeIn[k].selected = true;
     }
   }
 }
