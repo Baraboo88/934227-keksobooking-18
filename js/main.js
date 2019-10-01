@@ -96,7 +96,6 @@ function activePageActions() {
   removeDisabledFromForm(mapFiltersForm, 'textarea');
   document.querySelector('#address').setAttribute('readonly', true);
   addElementsToBlock(mapPins, pins, addElements);
-  addCard(pins[0]);
 }
 
 function activatePage() {
@@ -121,6 +120,7 @@ function onClickMainMapPin() {
   activePageActions();
   populateActiveMainPinlAddress();
   mapPinMain.removeEventListener('click', onClickMainMapPin);
+
 }
 
 function onMapPinsKeydown(evt) {
@@ -277,6 +277,7 @@ function addCard(obj) {
 
 function onCardCloseButtonClick() {
   removeCard();
+  document.removeEventListener('keydown', onCardEscKeydown);
 }
 
 function onCardEscKeydown(evt) {
@@ -329,25 +330,15 @@ var housingTypeMinPriceMap = {
 function onTimeInChange() {
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  var timeInValue = timeIn[timeIn.selectedIndex].value;
-  for (var k = 0; k < timeOut.length; k++) {
-    timeOut[k].removeAttribute('selected');
-    if (timeOut[k].value === timeInValue) {
-      timeOut[k].selected = true;
-    }
-  }
+  timeOut.value = timeIn[timeIn.selectedIndex].value;
+
 }
 
 function onTimeOutChange() {
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  var timeOutValue = timeOut[timeOut.selectedIndex].value;
-  for (var k = 0; k < timeIn.length; k++) {
-    timeIn[k].removeAttribute('selected');
-    if (timeIn[k].value === timeOutValue) {
-      timeIn[k].selected = true;
-    }
-  }
+  timeIn.value = timeOut[timeOut.selectedIndex].value;
+
 }
 
 function setupHousingTypeMinPrice() {
@@ -360,13 +351,6 @@ function setupHousingTypeMinPrice() {
 
 function onHousingTypeChange() {
   setupHousingTypeMinPrice();
-}
-
-function populatePinAddress(pin) {
-  var addressField = document.querySelector('#address');
-  var x = Math.round(getLeftAtPage(pin) - getLeftAtPage(mapPins) + PIN_WIDTH / 2);
-  var y = Math.round(getTopAtPage(pin) - getTopAtPage(mapPins) + PIN_HEIGHT);
-  addressField.value = x + ', ' + y;
 }
 
 function onRoomOrCapacityChange() {
@@ -390,12 +374,10 @@ function changeCard(element) {
 }
 
 function onPinClick(evt) {
-  if (evt.target.classList.contains('map__pin') || evt.target.tagName === 'IMG' && !evt.target.classList.contains('map__pin--main') && !evt.target.parentNode.classList.contains('map__pin--main')) {
+  if ((evt.target.classList.contains('map__pin') || evt.target.tagName === 'IMG') && !evt.target.classList.contains('map__pin--main') && !evt.target.parentNode.classList.contains('map__pin--main')) {
     if (evt.target.tagName === 'IMG') {
-      populatePinAddress(evt.target.parentNode);
       changeCard(evt.target.parentNode);
     } else {
-      populatePinAddress(evt.target);
       changeCard(evt.target);
     }
 
