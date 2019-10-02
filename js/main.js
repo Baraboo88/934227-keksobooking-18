@@ -283,8 +283,8 @@ function onCardCloseButtonClick() {
 function onCardEscKeydown(evt) {
   if (evt.keyCode === ESC_CODE) {
     removeCard();
+    document.removeEventListener('keydown', onCardEscKeydown);
   }
-  document.removeEventListener('keydown', onCardEscKeydown);
 }
 
 function removeCard() {
@@ -330,14 +330,14 @@ var housingTypeMinPriceMap = {
 function onTimeInChange() {
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  timeOut.value = timeIn[timeIn.selectedIndex].value;
+  timeOut.value = timeIn.value;
 
 }
 
 function onTimeOutChange() {
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  timeIn.value = timeOut[timeOut.selectedIndex].value;
+  timeIn.value = timeOut.value;
 
 }
 
