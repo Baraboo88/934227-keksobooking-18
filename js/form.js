@@ -154,7 +154,7 @@
 
   window.form = {
     activePageActions: activePageActions,
-    activateForm: activateForm,
+    activate: activateForm,
     populateActiveMainPinAddress: populateActiveMainPinAddress,
   };
 

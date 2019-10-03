@@ -5,11 +5,10 @@
   var ENTER_CODE = 13;
   var PIN_HEIGHT = 40;
   var PIN_WIDTH = 40;
+  var NUMBER_OF_MOCK_PINS = 8;
 
-  var mapBlock = document.querySelector('.map');
   var mapPins = document.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
-  var NUMBER_OF_MOCK_PINS = 8;
   var pins = getArrayOfMockObjects(NUMBER_OF_MOCK_PINS);
 
   function getArrayOfMockObjects(number) {
@@ -28,7 +27,7 @@
     mapPinMain.addEventListener('click', onClickMainMapPin);
     document.addEventListener('keydown', onMapPinsKeydown);
     mapPins.addEventListener('click', onPinClick);
-    window.form.activateForm();
+    window.form.activate();
   }
 
   function addElements(obj) {
@@ -71,23 +70,15 @@
     var yLocation = parseInt(element.style.top, 10) + PIN_HEIGHT;
 
     if (document.querySelector('.map__card')) {
-      window.card.removeCard();
+      window.card.remove();
     }
 
     pins.forEach(function (elem) {
       if (elem.location.x === xLocation && elem.location.y === yLocation) {
-        window.card.addCard(elem);
+        window.card.add(elem);
       }
     });
   }
-
-  window.map = {
-    mapBlock: mapBlock,
-    mapPins: mapPins,
-    mapPinMain: mapPinMain,
-    activePageActions: activePageActions,
-
-  };
 
   activatePage();
 
