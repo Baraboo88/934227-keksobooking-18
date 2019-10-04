@@ -40,8 +40,6 @@
   addDisabledToForm(mapFiltersForm, 'textarea');
   populateInitialAddress();
 
-
-
   function populateInitialAddress() {
     var addressField = document.querySelector('#address');
     var x = Math.round(getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) + (getElementWidth('.map__pin--main') / 2));
@@ -49,7 +47,12 @@
     addressField.value = x + ', ' + y;
   }
 
-  window.util.populateActiveMainPinAddress();
+  function populateActiveMainPinAddress() {
+    var addressField = document.querySelector('#address');
+    var x = Math.round(getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) + (getElementWidth('.map__pin--main') / 2));
+    var y = Math.round(getTopAtPage(mapPinMain) - getTopAtPage(mapPins) + getElementHeight('.map__pin--main'));
+    addressField.value = x + ', ' + y;
+  }
 
   function addDisabledToForm(formDomElement, selector) {
     formDomElement.querySelectorAll(selector).forEach(function (element) {

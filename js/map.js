@@ -13,8 +13,6 @@
 
   var getLeftAtPage = window.util.getLeftAtPage;
   var getTopAtPage = window.util.getTopAtPage;
-  var getElementWidth = window.util.getElementWidth;
-  var getElementHeight = window.util.getElementHeight;
 
 
   function getArrayOfMockObjects(number) {
@@ -45,7 +43,6 @@
     clonedElement.firstChild.alt = obj.offer.title;
     return clonedElement;
   }
-
 
   function onClickMainMapPin() {
     activePageActions();
@@ -89,8 +86,6 @@
 
   function onClickMove(evt) {
 
-    var flag = false;
-
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY,
@@ -126,8 +121,7 @@
         mapPinMain.style.left = (getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) - shift.x) + 'px';
       }
 
-
-      window.util.populateActiveMainPinAddress();
+      window.form.populateActiveMainPinAddress();
 
     }
 
