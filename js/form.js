@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var getLeftAtPage = window.util.getLeftAtPage;
+  var getTopAtPage = window.util.getTopAtPage;
+  var getElementWidth = window.util.getElementWidth;
+  var getElementHeight = window.util.getElementHeight;
+
   var adForm = document.querySelector('.ad-form');
   var mapFiltersForm = document.querySelector('.map__filters');
   var mapPins = document.querySelector('.map__pins');
@@ -24,11 +29,6 @@
       'errorText': '100 комнат не для гостей',
     },
   };
-
-  var getLeftAtPage = window.util.getLeftAtPage;
-  var getTopAtPage = window.util.getTopAtPage;
-  var getElementWidth = window.util.getElementWidth;
-  var getElementHeight = window.util.getElementHeight;
 
   addDisabledToForm(adForm, 'input');
   addDisabledToForm(adForm, 'select');

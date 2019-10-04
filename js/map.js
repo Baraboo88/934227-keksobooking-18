@@ -25,7 +25,7 @@
     document.querySelector('.map').classList.remove('map--faded');
     document.querySelector('.ad-form').classList.remove('ad-form--disabled');
     window.util.addElementsToBlock(mapPins, pins, addElements);
-    mapPinMain.addEventListener('mousedown', onClickMove);
+    mapPinMain.addEventListener('mousedown', onPinMove);
   }
 
   function activatePage() {
@@ -84,7 +84,7 @@
     });
   }
 
-  function onClickMove(evt) {
+  function onPinMove(evt) {
 
     var startCoords = {
       x: evt.clientX,
@@ -92,7 +92,6 @@
     };
 
     function onMouseMove(moveEvt) {
-      evt.preventDefault();
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY,
