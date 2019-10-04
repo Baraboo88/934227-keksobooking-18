@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var getLeftAtPage = window.util.getLeftAtPage;
+  var getTopAtPage = window.util.getTopAtPage;
+  var getElementWidth = window.util.getElementWidth;
+  var getElementHeight = window.util.getElementHeight;
+
   var adForm = document.querySelector('.ad-form');
   var mapFiltersForm = document.querySelector('.map__filters');
   var mapPins = document.querySelector('.map__pins');
@@ -34,22 +39,6 @@
   addDisabledToForm(mapFiltersForm, 'button');
   addDisabledToForm(mapFiltersForm, 'textarea');
   populateInitialAddress();
-
-  function getLeftAtPage(element) {
-    return element.getBoundingClientRect().left - document.querySelector('html').getBoundingClientRect().left;
-  }
-
-  function getTopAtPage(element) {
-    return element.getBoundingClientRect().top - document.querySelector('html').getBoundingClientRect().top;
-  }
-
-  function getElementWidth(selector) {
-    return document.querySelector(selector).clientWidth;
-  }
-
-  function getElementHeight(selector) {
-    return document.querySelector(selector).clientHeight;
-  }
 
   function populateInitialAddress() {
     var addressField = document.querySelector('#address');
