@@ -2,7 +2,7 @@
 
 (function () {
 
-  var loadUrl = 'https://js.dump.academy/keksobooking/dat';
+  var loadUrl = 'https://js.dump.academy/keksobooking/data';
   var xhr = new XMLHttpRequest();
 
 
