@@ -59,11 +59,13 @@
     window.form.activePageActions();
     window.form.populateActiveMainPinAddress();
     mapPinMain.removeEventListener('click', onClickMainMapPin);
+    document.removeEventListener('keydown', onMapPinsKeydown);
   }
 
   function onMapPinsKeydown(evt) {
     if (evt.keyCode === ENTER_CODE) {
       activePageActions();
+      document.removeEventListener('keydown', onMapPinsKeydown);
     }
   }
 
