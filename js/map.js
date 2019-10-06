@@ -23,6 +23,12 @@
   function onErrorLoadPins() {
     var clonedElement = window.util.getClonedElement('#error', '.error');
     mapPins.appendChild(clonedElement);
+    document.querySelector('.error__button').addEventListener('click', onClickErrorButton);
+  }
+
+  function onClickErrorButton() {
+    var errorElement = document.querySelector('.error');
+    errorElement.parentNode.removeChild(errorElement);
   }
 
   function activePageActions() {

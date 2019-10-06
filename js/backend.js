@@ -15,6 +15,7 @@
         xhr.removeEventListener('load', onLoadResponse);
       } else {
         onError();
+        xhr.removeEventListener('load', onLoadResponse);
       }
 
     }
