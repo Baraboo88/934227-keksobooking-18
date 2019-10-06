@@ -2,17 +2,6 @@
 
 (function () {
   window.data = {
-    offerTypeList: ['palace', 'flat', 'house', 'bungalo'],
-    offerTypeListMap: {
-      'palace': 'Дворец',
-      'flat': 'Квартира',
-      'bungalo': 'Бунгало',
-      'house': 'Дом',
-    },
-    offerCheckinList: ['12:00', '13:00', '14:00'],
-    offerCheckoutList: ['12:00', '13:00', '14:00'],
-    offerFeaturesList: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-    offerPhotoList: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
     roomsCapacityMap: {
       '1': {
         'guests': ['1'],

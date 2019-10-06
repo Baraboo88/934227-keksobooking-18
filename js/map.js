@@ -5,26 +5,30 @@
   var ENTER_CODE = 13;
   var PIN_HEIGHT = 40;
   var PIN_WIDTH = 40;
-  var NUMBER_OF_MOCK_PINS = 8;
+
 
   var mapPins = document.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
-  var pins = getArrayOfMockObjects(NUMBER_OF_MOCK_PINS);
+  var pins = null;
 
   var getLeftAtPage = window.util.getLeftAtPage;
   var getTopAtPage = window.util.getTopAtPage;
 
 
-  function getArrayOfMockObjects(number) {
-    return new Array(number).fill('').map(function (element, index) {
-      return window.getMockObject(index + 1);
-    });
+  function onLoadPins(pinsArray) {
+    window.util.addElementsToBlock(mapPins, pinsArray, addElements);
+    pins = pinsArray;
+  }
+
+  function onErrorLoadPins() {
+    var clonedElement = window.util.getClonedElement('#error', '.error');
+    mapPins.appendChild(clonedElement);
   }
 
   function activePageActions() {
     document.querySelector('.map').classList.remove('map--faded');
     document.querySelector('.ad-form').classList.remove('ad-form--disabled');
-    window.util.addElementsToBlock(mapPins, pins, addElements);
+    window.backend.load(onLoadPins, onErrorLoadPins);
     mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
   }
 
