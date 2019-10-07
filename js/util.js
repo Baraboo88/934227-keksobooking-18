@@ -2,6 +2,7 @@
 
 (function () {
 
+  var ESC_CODE = 27;
 
   function addElementsToBlock(block, elements, callBackCloneAndAdd) {
     var documentFragment = document.createDocumentFragment();
@@ -36,6 +37,38 @@
     return document.querySelector(selector).clientHeight;
   }
 
+  function onErrorLoadSave() {
+    var mainElement = document.querySelector('main');
+
+    if (mainElement.contains(document.querySelector('.error'))) {
+      mainElement.removeChild(document.querySelector('.success'));
+    }
+    var clonedElement = window.util.getClonedElement('#error', '.error');
+
+    function closeErrorMsg() {
+      var errorElement = document.querySelector('.error');
+      errorElement.parentNode.removeChild(errorElement);
+    }
+
+    function onClickError() {
+      closeErrorMsg();
+      document.removeEventListener('click', onClickError);
+      document.removeEventListener('keydown', onKeydownError);
+    }
+
+    function onKeydownError(evt) {
+      if (evt.keyCode === ESC_CODE) {
+        closeErrorMsg();
+        document.removeEventListener('click', onClickError);
+        document.removeEventListener('keydown', onKeydownError);
+      }
+    }
+
+    mainElement.appendChild(clonedElement);
+    document.querySelector('.error__button').addEventListener('click', onClickError);
+    document.addEventListener('click', onClickError);
+    document.addEventListener('keydown', onKeydownError);
+  }
 
   window.util = {
     addElementsToBlock: addElementsToBlock,
@@ -44,5 +77,6 @@
     getTopAtPage: getTopAtPage,
     getElementWidth: getElementWidth,
     getElementHeight: getElementHeight,
+    onErrorLoadSave: onErrorLoadSave,
   };
 })();
