@@ -158,9 +158,10 @@
   function onSendFormDataSuccess() {
     var mainElement = document.querySelector('main');
 
-    if (!mainElement.contains(document.querySelector('.success'))) {
-      var clonedElement = window.util.getClonedElement('#success', '.success');
+    if (mainElement.contains(document.querySelector('.success'))) {
+      mainElement.removeChild(document.querySelector('.success'));
     }
+    var clonedElement = window.util.getClonedElement('#success', '.success');
 
     function closeSuccessMsg() {
       var mapPinArray = document.querySelectorAll('.map__pin');

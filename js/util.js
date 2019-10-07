@@ -40,9 +40,10 @@
   function onErrorLoadSave() {
     var mainElement = document.querySelector('main');
 
-    if (!mainElement.contains(document.querySelector('.error'))) {
-      var clonedElement = window.util.getClonedElement('#error', '.error');
+    if (mainElement.contains(document.querySelector('.error'))) {
+      mainElement.removeChild(document.querySelector('.success'));
     }
+    var clonedElement = window.util.getClonedElement('#error', '.error');
 
     function closeErrorMsg() {
       var errorElement = document.querySelector('.error');
