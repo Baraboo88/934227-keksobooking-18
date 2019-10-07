@@ -3,6 +3,7 @@
 (function () {
 
   var loadUrl = 'https://js.dump.academy/keksobooking/data';
+  var saveUrl = 'https://js.dump.academy/keksobooking';
   var xhr = new XMLHttpRequest();
 
 
@@ -32,8 +33,31 @@
 
   }
 
+  function save(data, onLoad, onError) {
+
+    function onSendResponse() {
+      if (xhr.status === 200) {
+        onLoad();
+        xhr.removeEventListener('load', onSendResponse);
+      } else {
+        onError();
+      }
+    }
+
+    function onErrorResponse() {
+      onError();
+    }
+
+
+    xhr.addEventListener('load', onSendResponse);
+    xhr.addEventListener('error', onErrorResponse);
+    xhr.open('POST', saveUrl);
+    xhr.send(data);
+  }
+
   window.backend = {
-    load: load
+    load: load,
+    save: save
   };
 
 })();

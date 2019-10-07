@@ -20,21 +20,10 @@
     pins = pinsArray;
   }
 
-  function onErrorLoadPins() {
-    var clonedElement = window.util.getClonedElement('#error', '.error');
-    mapPins.appendChild(clonedElement);
-    document.querySelector('.error__button').addEventListener('click', onClickErrorButton);
-  }
-
-  function onClickErrorButton() {
-    var errorElement = document.querySelector('.error');
-    errorElement.parentNode.removeChild(errorElement);
-  }
-
   function activePageActions() {
     document.querySelector('.map').classList.remove('map--faded');
     document.querySelector('.ad-form').classList.remove('ad-form--disabled');
-    window.backend.load(onLoadPins, onErrorLoadPins);
+    window.backend.load(onLoadPins, window.util.onErrorLoadSave);
     mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
   }
 

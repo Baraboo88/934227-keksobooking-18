@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var ESC_CODE = 27;
   var getLeftAtPage = window.util.getLeftAtPage;
   var getTopAtPage = window.util.getTopAtPage;
   var getElementWidth = window.util.getElementWidth;
@@ -10,6 +11,7 @@
   var mapFiltersForm = document.querySelector('.map__filters');
   var mapPins = document.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
+
 
   var roomsCapacityMap = {
     '1': {
@@ -131,6 +133,7 @@
     var timeIn = document.querySelector('#timein');
     var housingType = document.querySelector('#type');
     var timeOut = document.querySelector('#timeout');
+
     validateRoomNumbers();
     setupHousingTypeMinPrice();
     housingType.addEventListener('input', onHousingTypeChange);
@@ -138,8 +141,67 @@
     roomNumber.addEventListener('input', onRoomOrCapacityChange);
     timeIn.addEventListener('input', onTimeInChange);
     timeOut.addEventListener('input', onTimeOutChange);
+    document.querySelector('.ad-form__submit').addEventListener('click', onFormSubmitClick);
 
   }
+
+  function onFormSubmitClick(evt) {
+    var formElement = document.querySelector('.ad-form');
+    var formData = new FormData(formElement);
+    if (document.querySelector('.ad-form').checkValidity()) {
+      evt.preventDefault();
+      window.backend.save(formData, onSendFormDataSuccess, window.util.onErrorLoadSave);
+    }
+
+  }
+
+  function onSendFormDataSuccess() {
+    var mainElement = document.querySelector('main');
+    var clonedElement = window.util.getClonedElement('#success', '.success');
+
+    function closeSuccessMsg() {
+      var mapPinArray = document.querySelectorAll('.map__pin');
+      var successElement = document.querySelector('.success');
+      if (document.querySelector('.map__card')) {
+        window.card.remove();
+      }
+
+      mapPinArray.forEach(function (element) {
+        if (!element.classList.contains('map__pin--main')) {
+          element.parentNode.removeChild(element);
+        }
+      });
+
+      document.querySelector('.ad-form').reset();
+
+      mapPinMain.style.left = 570 + 'px';
+      mapPinMain.style.top = 375 + 'px';
+      populateActiveMainPinAddress();
+
+      successElement.parentNode.removeChild(successElement);
+    }
+
+    function onClickSuccessMsg() {
+      closeSuccessMsg();
+      document.removeEventListener('click', onClickSuccessMsg);
+      document.removeEventListener('keydown', onKeydownSuccessMsg);
+    }
+
+    function onKeydownSuccessMsg(evt) {
+      if (evt.keyCode === ESC_CODE) {
+        closeSuccessMsg();
+        document.removeEventListener('keydown', onKeydownSuccessMsg);
+        document.removeEventListener('click', onClickSuccessMsg);
+      }
+
+    }
+
+    mainElement.appendChild(clonedElement);
+    document.addEventListener('click', onClickSuccessMsg);
+    document.addEventListener('keydown', onKeydownSuccessMsg);
+
+  }
+
 
   window.form = {
     activePageActions: activePageActions,
