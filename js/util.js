@@ -41,7 +41,7 @@
     var mainElement = document.querySelector('main');
 
     if (mainElement.contains(document.querySelector('.error'))) {
-      mainElement.removeChild(document.querySelector('.success'));
+      mainElement.removeChild(document.querySelector('.error'));
     }
     var clonedElement = window.util.getClonedElement('#error', '.error');
 
