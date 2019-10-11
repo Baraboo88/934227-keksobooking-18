@@ -2,6 +2,12 @@
 
 (function () {
   window.data = {
+    offerTypeListMap: {
+      'palace': 'Дворец',
+      'flat': 'Квартира',
+      'bungalo': 'Бунгало',
+      'house': 'Дом',
+    },
     roomsCapacityMap: {
       '1': {
         'guests': ['1'],
