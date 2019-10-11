@@ -38,8 +38,18 @@
     });
   }
 
-  function onFilterChange() {
+  function renderFilteredPins() {
     var housingTypeValue = document.querySelector('#housing-type').value;
+    var housingPriceValue = document.querySelector('#housing-price').value;
+    var housingRoomsValue = document.querySelector('#housing-rooms').value;
+    var housingGuestsValue = document.querySelector('#housing-guests').value;
+    var filterDishwasherValue = document.querySelector('#filter-dishwasher').value;
+    var filterParkingChecked = document.querySelector('#filter-parking').checked;
+    var filterWasherChecked = document.querySelector('#filter-washer').checked;
+    var filterElevatorChecked = document.querySelector('#filter-elevator').checked;
+    var filterConditionerChecked = document.querySelector('#filter-conditioner').checked;
+
+
     clearPins();
 
     window.util.addElementsToBlock(mapPins, pins.filter(function (element) {
@@ -47,14 +57,85 @@
         return true;
       }
       return element.offer.type === housingTypeValue;
-    }).slice(0, 5), addElements);
+    })
+      .filter(function (element) {
+        if (housingPriceValue === 'any') {
+          return true;
+        } else if (housingPriceValue === 'low' && element.offer.price < 10000) {
+          return true;
+        } else if (housingPriceValue === 'middle' && element.offer.price < 50000 && element.offer.price >= 10000) {
+          return true;
+        } else if (housingPriceValue === 'high' && element.offer.price >= 50000) {
+          return true;
+        }
+        return false;
+      })
+      .filter(function (element) {
+        if (housingRoomsValue === 'any') {
+          return true;
+        } else if (housingRoomsValue === '1' && element.offer.rooms === 1) {
+          return true;
+        } else if (housingRoomsValue === '2' && element.offer.rooms === 2) {
+          return true;
+        } else if (housingRoomsValue === '3' && element.offer.rooms === 3) {
+          return true;
+        }
+        return false;
+      })
+      .filter(function (element) {
+        if (housingGuestsValue === 'any') {
+          return true;
+        } else if (housingGuestsValue === '1' && element.offer.guests === 1) {
+          return true;
+        } else if (housingGuestsValue === '2' && element.offer.guests === 2) {
+          return true;
+        } else if (housingGuestsValue === '0' && element.offer.guests === 0) {
+          return true;
+        }
+        return false;
+      })
+      .filter(function (element) {
+        if (!filterDishwasherValue) {
+          return true;
+        }
+        return element.offer.features.includes('dishwasher');
+      })
+      .filter(function (element) {
+        if (!filterParkingChecked) {
+          return true;
+        }
+        return element.offer.features.includes('parking');
+      })
+      .filter(function (element) {
+        if (!filterWasherChecked) {
+          return true;
+        }
+        return element.offer.features.includes('washer');
+      })
+      .filter(function (element) {
+        if (!filterElevatorChecked) {
+          return true;
+        }
+        return element.offer.features.includes('elevator');
+      })
+      .filter(function (element) {
+        if (!filterConditionerChecked) {
+          return true;
+        }
+        return element.offer.features.includes('conditioner');
+      })
+      .slice(0, 5), addElements);
+  }
+
+  function onFilterChange() {
+    window.util.debounce(renderFilteredPins);
   }
 
   function activatePage() {
     mapPinMain.addEventListener('click', onClickMainMapPin);
     document.addEventListener('keydown', onMapPinsKeydown);
     mapPins.addEventListener('click', onPinClick);
-    document.querySelector('.map__filter').addEventListener('input', onFilterChange);
+    document.querySelector('.map__filters').addEventListener('input', onFilterChange);
     window.form.activate();
   }
 
