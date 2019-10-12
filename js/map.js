@@ -43,12 +43,15 @@
     var housingPriceValue = document.querySelector('#housing-price').value;
     var housingRoomsValue = document.querySelector('#housing-rooms').value;
     var housingGuestsValue = document.querySelector('#housing-guests').value;
-    var filterWifiChecked = document.querySelector('#filter-wifi').checked;
-    var filterDishwasherChecked = document.querySelector('#filter-dishwasher').checked;
-    var filterParkingChecked = document.querySelector('#filter-parking').checked;
-    var filterWasherChecked = document.querySelector('#filter-washer').checked;
-    var filterElevatorChecked = document.querySelector('#filter-elevator').checked;
-    var filterConditionerChecked = document.querySelector('#filter-conditioner').checked;
+    var maxCheckbox = document.querySelectorAll('.map__checkbox');
+    var featuresArray = [];
+
+
+    maxCheckbox.forEach(function (element) {
+      if (element.checked) {
+        featuresArray.push(element.value);
+      }
+    });
 
 
     clearPins();
@@ -63,29 +66,35 @@
         if (housingPriceValue === 'any') {
           return true;
         }
-        return (housingPriceValue === 'low' && element.offer.price < 10000) || (housingPriceValue === 'middle' && element.offer.price < 50000 && element.offer.price >= 10000) || (housingPriceValue === 'high' && element.offer.price >= 50000);
+
+        switch (true) {
+          case (housingPriceValue === 'low'):
+            return element.offer.price < 10000;
+          case (housingPriceValue === 'middle'):
+            return element.offer.price <= 50000 && element.offer.price >= 10000;
+          case (housingPriceValue === 'high'):
+            return element.offer.price > 50000;
+          default:
+            return false;
+        }
+
       })
       .filter(function (element) {
         if (housingRoomsValue === 'any') {
           return true;
         }
-        return (housingRoomsValue === '1' && element.offer.rooms === 1) || (housingRoomsValue === '2' && element.offer.rooms === 2) || (housingRoomsValue === '3' && element.offer.rooms === 3);
+        return housingRoomsValue === element.offer.rooms.toString();
 
       })
       .filter(function (element) {
         if (housingGuestsValue === 'any') {
           return true;
         }
-        return (housingGuestsValue === '1' && element.offer.guests === 1) || (housingGuestsValue === '2' && element.offer.guests === 2) || (housingGuestsValue === '0' && element.offer.guests === 0);
+        return housingGuestsValue === element.offer.guests.toString();
 
       })
       .filter(function (element) {
-        return (filterWifiChecked === element.offer.features.includes('wifi'))
-          && (filterDishwasherChecked === element.offer.features.includes('dishwasher'))
-          && (filterParkingChecked === element.offer.features.includes('parking'))
-          && (filterWasherChecked === element.offer.features.includes('washer'))
-          && (filterElevatorChecked === element.offer.features.includes('elevator'))
-          && (filterConditionerChecked === element.offer.features.includes('conditioner'));
+        return featuresArray.toString() === element.offer.features.toString();
       })
       .slice(0, 5), addElements);
   }
