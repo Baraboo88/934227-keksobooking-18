@@ -77,7 +77,10 @@
   }
 
   function removeCard() {
-    document.querySelector('.map').removeChild(document.querySelector('.map__card'));
+    var mapCard = document.querySelector('.map__card');
+    if (mapBlock.contains(mapCard)) {
+      document.querySelector('.map').removeChild(mapCard);
+    }
   }
 
   window.card = {

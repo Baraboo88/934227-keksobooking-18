@@ -43,18 +43,13 @@
     var housingPriceValue = document.querySelector('#housing-price').value;
     var housingRoomsValue = document.querySelector('#housing-rooms').value;
     var housingGuestsValue = document.querySelector('#housing-guests').value;
-    var maxCheckbox = document.querySelectorAll('.map__checkbox');
-    var featuresArray = [];
-
-
-    maxCheckbox.forEach(function (element) {
-      if (element.checked) {
-        featuresArray.push(element.value);
-      }
+    var selectedFeatures = Array.from(document.querySelectorAll('.map__checkbox:checked')).map(function (checkbox) {
+      return checkbox.value;
     });
 
 
     clearPins();
+    window.card.remove();
 
     window.util.addElementsToBlock(mapPins, pins.filter(function (element) {
       if (housingTypeValue === 'any') {
@@ -67,12 +62,12 @@
           return true;
         }
 
-        switch (true) {
-          case (housingPriceValue === 'low'):
+        switch (housingPriceValue) {
+          case 'low':
             return element.offer.price < 10000;
-          case (housingPriceValue === 'middle'):
+          case 'middle':
             return element.offer.price <= 50000 && element.offer.price >= 10000;
-          case (housingPriceValue === 'high'):
+          case 'high':
             return element.offer.price > 50000;
           default:
             return false;
@@ -94,7 +89,9 @@
 
       })
       .filter(function (element) {
-        return featuresArray.toString() === element.offer.features.toString();
+        return selectedFeatures.every(function (feature) {
+          return element.offer.features.includes(feature);
+        });
       })
       .slice(0, 5), addElements);
   }
