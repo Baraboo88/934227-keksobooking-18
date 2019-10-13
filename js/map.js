@@ -38,23 +38,73 @@
     });
   }
 
-  function onFilterChange() {
+  function renderFilteredPins() {
     var housingTypeValue = document.querySelector('#housing-type').value;
+    var housingPriceValue = document.querySelector('#housing-price').value;
+    var housingRoomsValue = document.querySelector('#housing-rooms').value;
+    var housingGuestsValue = document.querySelector('#housing-guests').value;
+    var selectedFeatures = Array.from(document.querySelectorAll('.map__checkbox:checked')).map(function (checkbox) {
+      return checkbox.value;
+    });
+
+
     clearPins();
+    window.card.remove();
 
     window.util.addElementsToBlock(mapPins, pins.filter(function (element) {
       if (housingTypeValue === 'any') {
         return true;
       }
       return element.offer.type === housingTypeValue;
-    }).slice(0, 5), addElements);
+    })
+      .filter(function (element) {
+        if (housingPriceValue === 'any') {
+          return true;
+        }
+
+        switch (housingPriceValue) {
+          case 'low':
+            return element.offer.price < 10000;
+          case 'middle':
+            return element.offer.price <= 50000 && element.offer.price >= 10000;
+          case 'high':
+            return element.offer.price > 50000;
+          default:
+            return false;
+        }
+
+      })
+      .filter(function (element) {
+        if (housingRoomsValue === 'any') {
+          return true;
+        }
+        return housingRoomsValue === element.offer.rooms.toString();
+
+      })
+      .filter(function (element) {
+        if (housingGuestsValue === 'any') {
+          return true;
+        }
+        return housingGuestsValue === element.offer.guests.toString();
+
+      })
+      .filter(function (element) {
+        return selectedFeatures.every(function (feature) {
+          return element.offer.features.includes(feature);
+        });
+      })
+      .slice(0, 5), addElements);
+  }
+
+  function onFilterChange() {
+    window.util.debounce(renderFilteredPins);
   }
 
   function activatePage() {
     mapPinMain.addEventListener('click', onClickMainMapPin);
     document.addEventListener('keydown', onMapPinsKeydown);
     mapPins.addEventListener('click', onPinClick);
-    document.querySelector('.map__filter').addEventListener('input', onFilterChange);
+    document.querySelector('.map__filters').addEventListener('input', onFilterChange);
     window.form.activate();
   }
 

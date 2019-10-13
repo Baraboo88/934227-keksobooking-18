@@ -4,6 +4,18 @@
 
   var ESC_CODE = 27;
 
+  var DEBOUNCE_INTERVAL = 500; // ms
+
+  var lastTimeout;
+
+  function debounce(cb) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+
+    }
+    lastTimeout = setTimeout(cb, DEBOUNCE_INTERVAL);
+
+  }
   function addElementsToBlock(block, elements, callBackCloneAndAdd) {
     var documentFragment = document.createDocumentFragment();
     elements.forEach(function (element) {
@@ -78,5 +90,6 @@
     getElementWidth: getElementWidth,
     getElementHeight: getElementHeight,
     onErrorLoadSave: onErrorLoadSave,
+    debounce: debounce
   };
 })();
