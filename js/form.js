@@ -11,8 +11,12 @@
   var mapFiltersForm = document.querySelector('.map__filters');
   var mapPins = document.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
+  var avatarFileChooser = document.querySelector('.ad-form-header__input');
 
+  var addPhotoPreview = document.querySelector('.ad-form__photo');
+  var uploadPhotoChooser = document.querySelector('.ad-form__upload input[type = file]');
 
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var roomsCapacityMap = {
     '1': {
       'guests': ['1'],
@@ -142,7 +146,8 @@
     timeIn.addEventListener('input', onTimeInChange);
     timeOut.addEventListener('input', onTimeOutChange);
     document.querySelector('.ad-form__submit').addEventListener('click', onFormSubmitClick);
-
+    avatarFileChooser.addEventListener('change', onAvatarChooserChange);
+    uploadPhotoChooser.addEventListener('change', onUploadPhotoChooserChange);
   }
 
   function onFormSubmitClick(evt) {
@@ -204,6 +209,45 @@
     document.addEventListener('click', onClickSuccessMsg);
     document.addEventListener('keydown', onKeydownSuccessMsg);
 
+  }
+
+  function chooseChanger(fileChooser, preview) {
+    var file = fileChooser.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    function onReaderLoad() {
+      preview.src = reader.result;
+    }
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', onReaderLoad);
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function onAvatarChooserChange() {
+    var avatarPreview = document.querySelector('.ad-form-header__preview img');
+    chooseChanger(avatarFileChooser, avatarPreview);
+  }
+
+  function onUploadPhotoChooserChange() {
+    var imageElement = document.querySelector('.ad-form-header__preview img').cloneNode();
+    imageElement.width = 70;
+    imageElement.height = 70;
+    imageElement.alt = 'Загруженная картинка';
+    if (addPhotoPreview.contains(addPhotoPreview.querySelector('img'))) {
+      addPhotoPreview.innerHTML = '';
+    }
+    addPhotoPreview.appendChild(imageElement);
+
+    chooseChanger(uploadPhotoChooser, imageElement);
   }
 
 
