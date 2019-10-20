@@ -3,13 +3,17 @@
 (function () {
 
   var ESC_CODE = 27;
+  var ROOM_FORMS = ['комната', 'комнат', 'комнаты'];
+  var GUESTS_FORMS = ['гостя', 'гостей', 'гостей'];
+  var NUMBER_OF_ROOMS_GUESTS = [1, 4]
+
   var addElementsToBlock = window.util.addElementsToBlock;
   var mapBlock = document.querySelector('.map');
   function flexNormalize(number, forms) {
     switch (true) {
-      case number === 1 :
+      case number === NUMBER_OF_ROOMS_GUESTS[0]:
         return forms[0];
-      case number > 4:
+      case number > NUMBER_OF_ROOMS_GUESTS[1]:
         return forms[1];
       default:
         return forms[2];
@@ -17,13 +21,11 @@
   }
 
   function roomsFlexNormalize(number) {
-    var forms = ['комната', 'комнат', 'комнаты'];
-    return flexNormalize(number, forms);
+    return flexNormalize(number, ROOM_FORMS);
   }
 
   function guestsFlexNormalize(number) {
-    var forms = ['гостя', 'гостей', 'гостей'];
-    return flexNormalize(number, forms);
+    return flexNormalize(number, GUESTS_FORMS);
   }
 
   function renderFeature(feature) {

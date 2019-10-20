@@ -2,6 +2,8 @@
 
 (function () {
   var ESC_CODE = 27;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
   var getLeftAtPage = window.util.getLeftAtPage;
   var getTopAtPage = window.util.getTopAtPage;
   var getElementWidth = window.util.getElementWidth;
@@ -13,10 +15,9 @@
   var mapPinMain = document.querySelector('.map__pin--main');
   var avatarFileChooser = document.querySelector('.ad-form-header__input');
 
-  var addPhotoPreview = document.querySelector('.ad-form__photo');
-  var uploadPhotoChooser = document.querySelector('.ad-form__upload input[type = file]');
+  var photoPreview = document.querySelector('.ad-form__photo');
+  var photoChooser = document.querySelector('.ad-form__upload input[type = file]');
 
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var roomsCapacityMap = {
     '1': {
       'guests': ['1'],
@@ -46,18 +47,21 @@
   addDisabledToForm(mapFiltersForm, 'textarea');
   populateInitialAddress();
 
-  function populateInitialAddress() {
+
+  function populatePinAddress(y) {
     var addressField = document.querySelector('#address');
     var x = Math.round(getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) + (getElementWidth('.map__pin--main') / 2));
-    var y = Math.round(getTopAtPage(mapPinMain) - getTopAtPage(mapPins) + (getElementHeight('.map__pin--main') / 2));
     addressField.value = x + ', ' + y;
   }
 
+  function populateInitialAddress() {
+    var y = Math.round(getTopAtPage(mapPinMain) - getTopAtPage(mapPins) + (getElementHeight('.map__pin--main') / 2));
+    populatePinAddress(y);
+  }
+
   function populateActiveMainPinAddress() {
-    var addressField = document.querySelector('#address');
-    var x = Math.round(getLeftAtPage(mapPinMain) - getLeftAtPage(mapPins) + (getElementWidth('.map__pin--main') / 2));
     var y = Math.round(getTopAtPage(mapPinMain) - getTopAtPage(mapPins) + getElementHeight('.map__pin--main'));
-    addressField.value = x + ', ' + y;
+    populatePinAddress(y);
   }
 
   function addDisabledToForm(formDomElement, selector) {
@@ -147,7 +151,7 @@
     timeOut.addEventListener('input', onTimeOutChange);
     document.querySelector('.ad-form__submit').addEventListener('click', onFormSubmitClick);
     avatarFileChooser.addEventListener('change', onAvatarChooserChange);
-    uploadPhotoChooser.addEventListener('change', onUploadPhotoChooserChange);
+    photoChooser.addEventListener('change', onUploadPhotoChooserChange);
   }
 
   function onFormSubmitClick(evt) {
@@ -242,12 +246,12 @@
     imageElement.width = 70;
     imageElement.height = 70;
     imageElement.alt = 'Загруженная картинка';
-    if (addPhotoPreview.contains(addPhotoPreview.querySelector('img'))) {
-      addPhotoPreview.innerHTML = '';
+    if (photoPreview.contains(photoPreview.querySelector('img'))) {
+      photoPreview.innerHTML = '';
     }
-    addPhotoPreview.appendChild(imageElement);
+    photoPreview.appendChild(imageElement);
 
-    chooseChanger(uploadPhotoChooser, imageElement);
+    chooseChanger(photoChooser, imageElement);
   }
 
 

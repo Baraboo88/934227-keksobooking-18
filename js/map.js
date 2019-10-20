@@ -5,7 +5,10 @@
   var ENTER_CODE = 13;
   var PIN_HEIGHT = 40;
   var PIN_WIDTH = 40;
-
+  var MIN_PRICE_EDGE = 10000;
+  var MAX_PRICE_EDGE = 50000;
+  var MIN_MAP_PINS_Y = 130;
+  var MAX_MAP_PINS_Y = 630;
 
   var mapPins = document.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
@@ -64,11 +67,11 @@
 
         switch (housingPriceValue) {
           case 'low':
-            return element.offer.price < 10000;
+            return element.offer.price < MIN_PRICE_EDGE;
           case 'middle':
-            return element.offer.price <= 50000 && element.offer.price >= 10000;
+            return element.offer.price <= MAX_PRICE_EDGE && element.offer.price >= MIN_PRICE_EDGE;
           case 'high':
-            return element.offer.price > 50000;
+            return element.offer.price > MAX_PRICE_EDGE;
           default:
             return false;
         }
@@ -177,10 +180,10 @@
         y: moveEvt.clientY,
       };
 
-      if ((getTopAtPage(mapPinMain) - getTopAtPage(mapPins) - shift.y) < 130 - mapPinMain.clientHeight) {
-        mapPinMain.style.top = (130 - mapPinMain.clientHeight) + 'px';
-      } else if ((getTopAtPage(mapPinMain) - getTopAtPage(mapPins) - shift.y) > 630 - mapPinMain.clientHeight) {
-        mapPinMain.style.top = (630 - mapPinMain.clientHeight) + 'px';
+      if ((getTopAtPage(mapPinMain) - getTopAtPage(mapPins) - shift.y) < MIN_MAP_PINS_Y - mapPinMain.clientHeight) {
+        mapPinMain.style.top = (MIN_MAP_PINS_Y - mapPinMain.clientHeight) + 'px';
+      } else if ((getTopAtPage(mapPinMain) - getTopAtPage(mapPins) - shift.y) > MAX_MAP_PINS_Y - mapPinMain.clientHeight) {
+        mapPinMain.style.top = (MAX_MAP_PINS_Y - mapPinMain.clientHeight) + 'px';
 
       } else {
         mapPinMain.style.top = (getTopAtPage(mapPinMain) - getTopAtPage(mapPins) - shift.y) + 'px';

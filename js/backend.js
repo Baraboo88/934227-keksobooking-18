@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-
+  var OK_STATUS = 200;
   var loadUrl = 'https://js.dump.academy/keksobooking/data';
   var saveUrl = 'https://js.dump.academy/keksobooking';
   var xhr = new XMLHttpRequest();
@@ -11,7 +11,7 @@
 
   function load(onLoad, onError) {
     function onLoadResponse() {
-      if (xhr.status === 200) {
+      if (xhr.status === OK_STATUS) {
         onLoad(xhr.response);
         xhr.removeEventListener('load', onLoadResponse);
       } else {
@@ -36,7 +36,7 @@
   function save(data, onLoad, onError) {
 
     function onSendResponse() {
-      if (xhr.status === 200) {
+      if (xhr.status === OK_STATUS) {
         onLoad();
         xhr.removeEventListener('load', onSendResponse);
       } else {
