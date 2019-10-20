@@ -5,7 +5,7 @@
   var ESC_CODE = 27;
   var ROOM_FORMS = ['комната', 'комнат', 'комнаты'];
   var GUESTS_FORMS = ['гостя', 'гостей', 'гостей'];
-  var NUMBER_OF_ROOMS_GUESTS = [1, 4]
+  var NUMBER_OF_ROOMS_GUESTS = [1, 4];
 
   var addElementsToBlock = window.util.addElementsToBlock;
   var mapBlock = document.querySelector('.map');
